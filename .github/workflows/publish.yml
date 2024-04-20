@@ -24,7 +24,7 @@ jobs:
 
       - name: Build the tenant-rabbit Docker image
         run: 
-          docker build . --tag ghcr.io/cristiandimas/wordpress:latest  
+          docker-compose -f docker-compose.yml up -d --tag ghcr.io/cristiandimas/wordpress:latest  
           docker push ghcr.io/cristiandimas/wordpress:latest
 
   deploy:
