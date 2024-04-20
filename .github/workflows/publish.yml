@@ -33,13 +33,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Deploy to Oracle Cloud!
-        uses: appleboy/ssh-action@master
+        uses: aappleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DIGITAL_HOST }}
           username: ${{ secrets.DIGITAL_USERNAME }}
           key: ${{ secrets.DIGITAL_PRIVATE_KEY }}
-          script:             
-            ssh -i ${{ secrets.DIGITAL_PRIVATE_KEY }} ${{ secrets.DIGITAL_USERNAME }}@${{ secrets.DIGITAL_HOST }}
-            docker-compose -f docker-compose.yml up -d     
+          port: ${{ secrets.DIGITAL_PORT }}
+          script:  whoami           
+               
   
 
