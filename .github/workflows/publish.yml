@@ -41,7 +41,7 @@ jobs:
           key: ${{ secrets.DIGITAL_PRIVATE_KEY }}
           port: ${{ secrets.DIGITAL_PORT }}
           script: |
-            script: |
+            
             # Pull the latest Docker image
             docker pull ghcr.io/cristiandimas/wordpress:latest
             
