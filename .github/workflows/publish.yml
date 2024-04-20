@@ -37,7 +37,7 @@ jobs:
 
       - name: SSH into Server!
         run: 
-          sshpass -p 'Mucur41219*' ssh -o StrictHostKeyChecking=no ubuntu@152.70.216.161  
-          docker-compose -f docker-compose.yml up -d 
+          sshpass -p 'Mucur41219*' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no ubuntu@152.70.216.161 docker-compose -f docker-compose.yml up -d
+
 
 
