@@ -27,7 +27,7 @@ jobs:
           docker build . --tag ghcr.io/cristiandimas/wordpress:latest  
           docker push ghcr.io/cristiandimas/wordpress:latest
 
-deploy:
+  deploy:
     needs: create-docker-image
     runs-on: ubuntu-latest
     steps:
