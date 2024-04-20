@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.WORDPRES_TOKEN }}
 
       - name: Build the tenant-rabbit Docker image
-        run: 
+        run: |
           docker-compose -f docker-compose.yml up -d --tag ghcr.io/cristiandimas/wordpress:latest  
           docker push ghcr.io/cristiandimas/wordpress:latest
 
@@ -40,8 +40,14 @@ jobs:
           key: ${{ secrets.DIGITAL_PRIVATE_KEY }}
           port: ${{ secrets.DIGITAL_PORT }}
           script: |
-             whoami
-             ls -al           
+            script: |
+            # Pull the latest Docker image
+            docker pull ghcr.io/cristiandimas/wordpress:latest
+            
+            # Deploy the Docker image to Oracle Cloud
+            docker run -d --name wordpress -p 80:80 ghcr.io/cristiandimas/wordpress:latest
+
+
                
   
 
