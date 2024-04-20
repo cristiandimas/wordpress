@@ -39,7 +39,9 @@ jobs:
           username: ${{ secrets.DIGITAL_USERNAME }}
           key: ${{ secrets.DIGITAL_PRIVATE_KEY }}
           port: ${{ secrets.DIGITAL_PORT }}
-          script:  whoami           
+          script: |
+             whoami
+             ls -al           
                
   
 
