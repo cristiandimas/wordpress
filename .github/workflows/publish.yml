@@ -30,14 +30,16 @@ jobs:
   deploy:
     needs: create-docker-image
     runs-on: ubuntu-latest
-    steps:      
-      - name: Install sshpass
-        run: 
-          sudo apt-get install -y sshpass
-
-      - name: SSH into Server!
-        run: 
-          sshpass -p 'Mucur41219*' ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no ubuntu@152.70.216.161 docker-compose -f docker-compose.yml up -d
-
-
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy to Oracle Cloud!
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DIGITAL_HOST }}
+          username: ${{ secrets.DIGITAL_USERNAME }}
+          key: ${{ secrets.DIGITAL_PRIVATE_KEY }}
+          script:             
+            ssh -i ${{ secrets.DIGITAL_PRIVATE_KEY }} ${{ secrets.DIGITAL_USERNAME }}@${{ secrets.DIGITAL_HOST }}
+            docker-compose -f docker-compose.yml up -d     
+  
 
