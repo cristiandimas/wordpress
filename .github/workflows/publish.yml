@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Deploy to Oracle Cloud
+      - name: Deploy to Oracle Cloud!
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DIGITAL_HOST }}
