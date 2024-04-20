@@ -38,8 +38,7 @@ jobs:
           host: ${{ secrets.DIGITAL_HOST }}
           username: ${{ secrets.DIGITAL_USERNAME }}
           key: ${{ secrets.DIGITAL_PRIVATE_KEY }}
-          script: |
-            ssh-keyscan -H ${{ secrets.DIGITAL_HOST }} >> ~/.ssh/known_hosts
+          script:             
             ssh -i ${{ secrets.DIGITAL_PRIVATE_KEY }} ${{ secrets.DIGITAL_USERNAME }}@${{ secrets.DIGITAL_HOST }}
             docker-compose -f docker-compose.yml up -d     
   
