@@ -35,7 +35,7 @@ jobs:
         run: 
           sudo apt-get install -y sshpass
 
-      - name: SSH into Server!!
+      - name: SSH into Server!
         run: 
           sshpass -p 'Mucur41219*' ssh -o StrictHostKeyChecking=no ubuntu@152.70.216.161  
           docker-compose -f docker-compose.yml up -d 
