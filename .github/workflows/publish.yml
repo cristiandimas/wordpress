@@ -74,7 +74,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
-    - name: Set up Docker Buildx
+    - name: Set up Docker Buildx x
       uses: docker/setup-buildx-action@v1
     - name: Login to GitHub Container Registry
       run: echo "${{ secrets.WORDPRESS_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
