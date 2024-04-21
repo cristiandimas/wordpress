@@ -31,13 +31,8 @@ jobs:
         port: 22
         # En esta sección se ejecutan los comando sobre el sistema para conseguir la integración
         script: |
-          cd /home/${{ secrets.DIGITAL_USERNAME }}/apps/cicdmedium/
-          git pull origin main
-          nvm use v18.16.1
-          pm2 stop "CICD Medium Server"
-          cd server
-          npm install
-          npm run test
+          cd /home/${{ secrets.DIGITAL_USERNAME }}/
+          ls -al 
   # Definimos un job llamado "build" que se ejecutará una vez el job "testing" haya finalizado
   # para eso usamos la propiedad "needs"
   build:
