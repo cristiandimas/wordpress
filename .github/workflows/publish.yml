@@ -1,61 +1,66 @@
-# This is a basic workflow to help you get started with Actions
+# Pipeline para integrar aplicaciones NodeJS en un VPS: Raul Alhena
 
-name: CI
+name: Server Integration
 
-# Controls when the workflow will run
+# Controla cuando la acción se iniciará. 
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # Disparador del workflow, la condición que se tiene que cumplir para poner en 
+  # marcha el worwflow, en este caso: realizar un push en la rama main del repositorio
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# Este es el proceso de acciones que se van a ejecutar, pueden ejecutarse de un job a varios,
+# tanto secuancialmente en paralelo
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  # Definimos un job llamado "testing"
+  testing:
+    # El sistema en el que se ejecutará el job
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    # steps representa la secuencia de tareas que se ejecutarán como parte del job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+    - name: Integration using ssh
+      uses: appleboy/ssh-action@master
+      # Usamos variables de entorno del propio Github para no exponer información delicada
+      env:
+        GITHUB_TOKEN: ${{ secrets.WORDPRESS_TOKEN }}
+      with:
+        host: ${{ secrets.DIGITAL_HOST }}
+        username: ${{ secrets.DIGITAL_USERNAME }}
+        key: ${{ secrets.DIGITAL_PRIVATE_KEY }}
+        port: 22
+        # En esta sección se ejecutan los comando sobre el sistema para conseguir la integración
+        script: |
+          cd /home/${{ secrets.DIGITAL_USERNAME }}/apps/cicdmedium/
+          git pull origin main
+          nvm use v18.16.1
+          pm2 stop "CICD Medium Server"
+          cd server
+          npm install
+          npm run test
+  # Definimos un job llamado "build" que se ejecutará una vez el job "testing" haya finalizado
+  # para eso usamos la propiedad "needs"
+  build:
+    needs: testing
+    # El sistema en el que se ejecutará el job
+    runs-on: ubuntu-latest
 
-      - name: Setup SSH
-      # You may pin to the exact commit or the version.
-      # uses: kielabokkie/ssh-key-and-known-hosts-action@5b675129e6aa73a496c939eb1f4a9fe4502fc324
-        uses: kielabokkie/ssh-key-and-known-hosts-action@master
-        with:
-        # Private key required to access the host
-           ssh-private-key: ${secrets.DIGITAL_PRIVATE_KEY}
-           # Hostname or IP to add to the known hosts file
-           ssh-host: ${secrets.DIGITAL_HOST}
-            # Port for key-scanning the server
-           ssh-port:  ${secrets.DIGITAL_PORT}
-
-      - name: Install Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          sudo apt-get update
-          sudo apt-get install docker-ce
-
-      - name: Build and push Docker images
-        run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/wordpress-nginx .
-          docker push ${{ secrets.DOCKER_USERNAME }}/wordpress-nginx
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/wordpress-php-fpm .
-          docker push ${{ secrets.DOCKER_USERNAME }}/wordpress-php-fpm
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/wordpress-db .
-          docker push ${{ secrets.DOCKER_USERNAME }}/wordpress-db
-         
-          
-
-
+    # steps representa la secuencia de tareas que se ejecutarán como parte del job
+    steps:
+    - name: Integration using ssh
+      uses: appleboy/ssh-action@master
+      # Usamos variables de entorno del propio Github para no exponer información delicada
+      env:
+        GITHUB_TOKEN: ${{ secrets.WORDPRESS_TOKEN }}
+      with:
+        host: ${{ secrets.DIGITAL_HOST }}
+        username: ${{ secrets.DIGITAL_USERNAME }}
+        key: ${{ secrets.DIGITAL_PRIVATE_KEY }}
+        port: 22
+        # En esta sección se ejecutan los comando sobre el sistema para conseguir la integración
+        script: |
+          cd /home/${{ secrets.DIGITAL_USERNAME }}/apps/cicdmedium/
+          git pull origin main
+          nvm use v18.16.1
+          cd server
+          npm run build
