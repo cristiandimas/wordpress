@@ -28,7 +28,7 @@ jobs:
       - name: Setup SSH
       # You may pin to the exact commit or the version.
       # uses: kielabokkie/ssh-key-and-known-hosts-action@5b675129e6aa73a496c939eb1f4a9fe4502fc324
-        uses: kielabokkie/ssh-key-and-known-hosts-action@v1.4.1
+        uses: kielabokkie/ssh-key-and-known-hosts-action@vmaster
         with:
         # Private key required to access the host
            ssh-private-key: ${secrets.DIGITAL_PRIVATE_KEY}
@@ -36,6 +36,25 @@ jobs:
            ssh-host: ${secrets.DIGITAL_HOST}
             # Port for key-scanning the server
            ssh-port:  ${secrets.DIGITAL_PORT}
+
+      - name: Install Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          sudo apt-get update
+          sudo apt-get install docker-ce
+
+      - name: Build and push Docker images
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/wordpress-nginx .
+          docker push ${{ secrets.DOCKER_USERNAME }}/wordpress-nginx
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/wordpress-php-fpm .
+          docker push ${{ secrets.DOCKER_USERNAME }}/wordpress-php-fpm
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/wordpress-db .
+          docker push ${{ secrets.DOCKER_USERNAME }}/wordpress-db
          
           
 
