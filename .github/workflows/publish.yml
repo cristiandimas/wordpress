@@ -28,7 +28,7 @@ jobs:
       - name: Setup SSH
       # You may pin to the exact commit or the version.
       # uses: kielabokkie/ssh-key-and-known-hosts-action@5b675129e6aa73a496c939eb1f4a9fe4502fc324
-        uses: kielabokkie/ssh-key-and-known-hosts-action@vmaster
+        uses: kielabokkie/ssh-key-and-known-hosts-action@master
         with:
         # Private key required to access the host
            ssh-private-key: ${secrets.DIGITAL_PRIVATE_KEY}
